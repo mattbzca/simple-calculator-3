@@ -1,0 +1,6 @@
+const numberButtons = document.querySelectorAll("#button-1, #button-2, #button-3, #button-4, #button-5, #button-6, #button-7, #button-8, #button-9, #button-0")
+const operationButtons = document.querySelectorAll("#button-plus, #button-minus, #button-multiply, #button-divide")
+const equalsButton = document.querySelector("#button-equals")
+const clearButton = document.querySelector("#button-clear")
+const lastResultDisplay = document.querySelector("#last-result-display")
+const currentResultDisplay = document.querySelector("#display")
