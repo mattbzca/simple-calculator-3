@@ -12,17 +12,19 @@ class Calculator {
     }
     /*Display number once its button is clicked*/
     displayNumber(number) {
-        this.currentResult = number
+        this.currentResult = this.currentResult.toString() + number.toString()
     }
     /*Displays operation once its button is clicked*/
     displayOperation(operation) {
-        
+        this.operation = operation
+        this.lastResult = this.currentResult
+        this.currentResult = ''
     }
     /*Calculates numbers*/
     compute() {
 
     }
-    /*Updates the display on the results*/
+    /*Updates the display on the results in real time*/
     updateDisplay() {
         this.currentResultDisplay.innerText = this.currentResult
     }
@@ -37,10 +39,17 @@ const currentResultDisplay = document.querySelector("#display")
 
 /*Object is made so that variables work*/
 const calculator = new Calculator(lastResultDisplay, currentResultDisplay)
-
+/*When button is clicked, a number will display on the screen*/
 numberButtons.forEach(button => {
     button.addEventListener('click', () => {
         calculator.displayNumber(button.innerText)
+        calculator.updateDisplay()
+    })
+})
+/*When button is clicked, an operator will display on the screen*/
+operationButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        calculator.displayOperation(button.innerText)
         calculator.updateDisplay()
     })
 })
