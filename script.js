@@ -58,7 +58,7 @@ buttons.forEach(button => {
       } else {
         /*Ignore padding with zeros*/
         if (expression === "0" && value === "0") return;
-        
+
         /*Updates expression*/
         expression += value;
         display.textContent = expression;
@@ -67,18 +67,20 @@ buttons.forEach(button => {
 
     /*Check if evaluation has been updated*/
     if (evaluationComplete) {
-      /*Disable the buttons once updated*/
-      buttons.forEach(button => {
-        button.disabled = true;
-      });
-
-      /*Update the last result*/
-      lastResult = result;
-      lastResultDisplay.textContent = `${expression} = ${result}`;
-
-      /* the lastResult is stored in the localStorage*/
-      localStorage.setItem("lastResult", JSON.stringify(lastResult));
-    }
+        /*Disable the buttons once updated*/
+        buttons.forEach(button => {
+          if (button.textContent !== "C") {
+            button.disabled = true;
+          }
+        });
+      
+        /*Update the last result*/
+        lastResult = result;
+        lastResultDisplay.textContent = `${expression} = ${result}`;
+      
+        /* the lastResult is stored in the localStorage*/
+        localStorage.setItem("lastResult", JSON.stringify(lastResult));
+      }
   });
 });
 
