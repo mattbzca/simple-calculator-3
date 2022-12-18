@@ -26,6 +26,11 @@ buttons.forEach(button => {
       operator = value;
       expression += ` ${value} `;
       display.textContent = expression;
+
+      /*Re-enables buttons when new expression starts*/
+      buttons.forEach(button => {
+        button.disabled = false;
+      });
     } else if (value === "=") {
       /*Checks if the operator is there*/
       if (!operator) return;
@@ -34,6 +39,13 @@ buttons.forEach(button => {
       result = eval(expression);
       display.textContent = `${expression} = ${result}`;
       evaluationComplete = true;
+
+      /*Disable buttons once updated*/
+      buttons.forEach(button => {
+        if (button.textContent !== "C") {
+            button.disabled = true;
+        }
+      });
     } else if (value === "C") {
       /*Reset result*/
       expression = "";
