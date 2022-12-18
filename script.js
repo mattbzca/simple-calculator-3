@@ -6,6 +6,20 @@ let result = null;
 let lastResult = null;
 let evaluationComplete = false;
 
+/*Constant variables, current display, calculator buttons, and last display*/
+const display = document.getElementById("display");
+const buttons = document.querySelectorAll(".calculator-button");
+const lastResultDisplay = document.getElementById("last-result-display");
+
+/*Button's event listeners*/
+buttons.forEach(button => {
+    button.addEventListener("click", event => {
+        const value = event.target.textContent;
+        if (value === "+" || value === "-" || value === "*" || value == "/") {
+            if (firstNumber) return;
+        }
+    })
+})
 /*Defining the calculator*/
 class Calculator {
     constructor(lastResultDisplay,currentResultDisplay) {
