@@ -1,3 +1,12 @@
+/*Set Variables*/
+let expression = "";
+let firstNumber = true;
+let operator = null;
+let result = null;
+let lastResult = null;
+let evaluationComplete = false;
+
+/*Defining the calculator*/
 class Calculator {
     constructor(lastResultDisplay,currentResultDisplay) {
         this.lastResultDisplay = lastResultDisplay
@@ -13,29 +22,73 @@ class Calculator {
     /*Display number once its button is clicked*/
     displayNumber(number) {
         this.currentResult = this.currentResult.toString() + number.toString()
+        this.updateDisplay()
     }
     /*Displays operation once its button is clicked*/
     displayOperation(operation) {
+        if (this.currentResult === '') return
+        if (this.lastResult !== '') {
+            this.compute()
+        }
+        this.operation = operation
+        this.lastResult = this.currentResult
+        this.currentResult = ''
+    }
+    displayEqual(operation) {
+        if (this.currentResult === '') return
+        if (this.lastResult !== '') {
+            this.compute()
+        }
         this.operation = operation
         this.lastResult = this.currentResult
         this.currentResult = ''
     }
     /*Calculates numbers*/
     compute() {
-
+        let computation
+        const last = parseFloat(this.lastResult)
+        const current = parseFloat(this.currentResult) 
+        if (isNaN(last) || isNaN(current)) return
+        switch (this.operation) {
+            case '+':
+                computation = last + current
+                break
+            case '-':
+                computation = last - current
+                break    
+            case '*':
+                computation = last * current
+                break    
+            case '/':
+                computation = last / current
+                break
+    /*If sign in case does not exist */
+            default:
+                return       
+        }
+        this.currentResult = computation
+        this.operation = undefined
+        this.lastResult = ''
+        this.updateDisplay()
     }
+
+    getDisplayNumber(number) {
+        const floatNumber = parseFloat(number)
+        if (isNaN(floatNumber)) return ''
+        return floatNumber.toLocaleString('en')
+    }
+
     /*Updates the display on the results in real time*/
     updateDisplay() {
-        this.currentResultDisplay.innerText = this.currentResult
+        if (this.operation != null) {
+            this.currentResultDisplay.innerText = 
+             `${this.getDisplayNumber(this.lastResult)} ${this.operation}`
+        } else {
+            this.currentResultDisplay.innerText = 
+             this.getDisplayNumber(this.currentResult)
+        }
     }
 }
-/*Constant variables for the buttons*/
-const numberButtons = document.querySelectorAll("#button-1, #button-2, #button-3, #button-4, #button-5, #button-6, #button-7, #button-8, #button-9, #button-0")
-const operationButtons = document.querySelectorAll("#button-plus, #button-minus, #button-multiply, #button-divide")
-const equalsButton = document.querySelector("#button-equals")
-const clearButton = document.querySelector("#button-clear")
-const lastResultDisplay = document.querySelector("#last-result-display")
-const currentResultDisplay = document.querySelector("#display")
 
 /*Object is made so that variables work*/
 const calculator = new Calculator(lastResultDisplay, currentResultDisplay)
@@ -46,10 +99,19 @@ numberButtons.forEach(button => {
         calculator.updateDisplay()
     })
 })
-/*When button is clicked, an operator will display on the screen*/
+/*When button is clicked, an operator will be shown*/
 operationButtons.forEach(button => {
     button.addEventListener('click', () => {
         calculator.displayOperation(button.innerText)
         calculator.updateDisplay()
     })
+})
+
+equalsButton.addEventListener('click', button => {
+    calculator.compute()
+    calculator.updateDisplay()
+})
+clearButton.addEventListener('click', button => {
+    calculator.clear()
+    calculator.updateDisplay()
 })
