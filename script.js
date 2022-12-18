@@ -15,117 +15,52 @@ const lastResultDisplay = document.getElementById("last-result-display");
 buttons.forEach(button => {
     button.addEventListener("click", event => {
         const value = event.target.textContent;
+
+        /*Checks when the first number is entered so operation can be inputted*/
         if (value === "+" || value === "-" || value === "*" || value == "/") {
             if (firstNumber) return;
-        }
-    })
-})
-/*Defining the calculator*/
-class Calculator {
-    constructor(lastResultDisplay,currentResultDisplay) {
-        this.lastResultDisplay = lastResultDisplay
-        this.currentResultDisplay = currentResultDisplay
-        this.clear()
-    }
-    /*Clears all the numbers*/
-    clear() {
-        this.currentResult = ''
-        this.lastResult = ''
-        this.operation = undefined
-    }
-    /*Display number once its button is clicked*/
-    displayNumber(number) {
-        this.currentResult = this.currentResult.toString() + number.toString()
-        this.updateDisplay()
-    }
-    /*Displays operation once its button is clicked*/
-    displayOperation(operation) {
-        if (this.currentResult === '') return
-        if (this.lastResult !== '') {
-            this.compute()
-        }
-        this.operation = operation
-        this.lastResult = this.currentResult
-        this.currentResult = ''
-    }
-    displayEqual(operation) {
-        if (this.currentResult === '') return
-        if (this.lastResult !== '') {
-            this.compute()
-        }
-        this.operation = operation
-        this.lastResult = this.currentResult
-        this.currentResult = ''
-    }
-    /*Calculates numbers*/
-    compute() {
-        let computation
-        const last = parseFloat(this.lastResult)
-        const current = parseFloat(this.currentResult) 
-        if (isNaN(last) || isNaN(current)) return
-        switch (this.operation) {
-            case '+':
-                computation = last + current
-                break
-            case '-':
-                computation = last - current
-                break    
-            case '*':
-                computation = last * current
-                break    
-            case '/':
-                computation = last / current
-                break
-    /*If sign in case does not exist */
-            default:
-                return       
-        }
-        this.currentResult = computation
-        this.operation = undefined
-        this.lastResult = ''
-        this.updateDisplay()
-    }
-
-    getDisplayNumber(number) {
-        const floatNumber = parseFloat(number)
-        if (isNaN(floatNumber)) return ''
-        return floatNumber.toLocaleString('en')
-    }
-
-    /*Updates the display on the results in real time*/
-    updateDisplay() {
-        if (this.operation != null) {
-            this.currentResultDisplay.innerText = 
-             `${this.getDisplayNumber(this.lastResult)} ${this.operation}`
+        /*Display is updated once operator is clicked*/
+            operator = value;
+            expression += ' ${value} ';
+            display.textContent = expression;
+        } else if (value === "=") {
+            if (!operator) return;
+        /*Calculation is displayed in real-time*/
+            result = eval(expression);
+            display.textContent = `${expression} = ${result}`;
+            evaluationComplete = true;
+        /*Clear button*/
+        } else if (value === "C") {
+            expression = "";
+            result = null;
+            operator = null;
+            firstNumber = true;
+            evaluationComplete = false;
+            display.textContent = "";
+            buttons.forEach(button => {
+                button.disabled = false;
+            });
         } else {
-            this.currentResultDisplay.innerText = 
-             this.getDisplayNumber(this.currentResult)
+            if (firstNumber || evaluationComplete) {
+                expression = value;
+                firstNumber = false;
+                evaluationComplete = false;
+                display.textContent = value;
+            } else {
+                expression += value;
+                display.textContent = expression;
+            }
         }
-    }
-}
-
-/*Object is made so that variables work*/
-const calculator = new Calculator(lastResultDisplay, currentResultDisplay)
-/*When button is clicked, a number will display on the screen*/
-numberButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        calculator.displayNumber(button.innerText)
-        calculator.updateDisplay()
-    })
-})
-/*When button is clicked, an operator will be shown*/
-operationButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        calculator.displayOperation(button.innerText)
-        calculator.updateDisplay()
-    })
-})
-
-equalsButton.addEventListener('click', button => {
-    calculator.compute()
-    calculator.updateDisplay()
-})
-clearButton.addEventListener('click', button => {
-    calculator.clear()
-    calculator.updateDisplay()
-})
+        /*Once calculation is complete, buttons are disabled*/
+        if (evaluationComplete) {
+            buttons.forEach(button => {
+                button.disabled = true;
+            });
+            lastResult = result;
+            lastResultDisplay.textContent = '${expression} = ${result}';
+            
+        /*The last result is stored in the local storage*/
+            localStorage.setItem("lastResult", JSON.stringify(lastResult));
+        }
+   });
+});
