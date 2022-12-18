@@ -56,9 +56,6 @@ buttons.forEach(button => {
         evaluationComplete = false;
         display.textContent = value;
       } else {
-        /*Ignore padding with zeros*/
-        if (expression === "0" && value === "0") return;
-        
         /*Updates expression*/
         expression += value;
         display.textContent = expression;
@@ -78,6 +75,17 @@ buttons.forEach(button => {
 
       /* the lastResult is stored in the localStorage*/
       localStorage.setItem("lastResult", JSON.stringify(lastResult));
+    }
+
+      // Check if the expression has been evaluated
+    if (evaluationComplete) {
+    // Disable the buttons
+        buttons.forEach(button => {
+      // Check if the button is the "clear" button
+        if (button.textContent !== "C") {
+            button.disabled = true;
+        }
+        });
     }
   });
 });
